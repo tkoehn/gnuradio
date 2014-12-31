@@ -40,6 +40,9 @@ if(HAVE_DLFCN_H)
     list(APPEND volk_libraries ${CMAKE_DL_LIBS})
 endif()
 
+# REQUIRED FOR ANDROID BUILDS
+list(APPEND volk_libraries m)
+
 ########################################################################
 # Setup the compiler name
 ########################################################################
@@ -411,7 +414,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "2.8.9")
       message(STATUS "---- Adding ASM files") # we always use ATT syntax
       message(STATUS "-- Detected armv7 architecture; enabling ASM")
       # setup architecture specific assembler flags
-      set(ARCH_ASM_FLAGS "-mfpu=neon -g")
+      set(ARCH_ASM_FLAGS "-march=armv7-a -mfpu=neon -g")
       # then add the files
       include_directories(${CMAKE_SOURCE_DIR}/kernels/volk/asm/neon)
       file(GLOB asm_files ${CMAKE_SOURCE_DIR}/kernels/volk/asm/neon/*.s)
@@ -545,7 +548,7 @@ endif(ENABLE_STATIC_LIBS)
 # Build the QA test application
 ########################################################################
 
-
+if(NOT ANDROID)
 if(Boost_FOUND)
 
     set_source_files_properties(
@@ -564,3 +567,4 @@ if(Boost_FOUND)
     add_test(qa_volk_test_all test_all)
 
 endif(Boost_FOUND)
+endif(NOT ANDROID)
