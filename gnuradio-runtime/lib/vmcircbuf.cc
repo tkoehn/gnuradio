@@ -68,7 +68,8 @@ namespace gr {
 
     std::vector<gr::vmcircbuf_factory *> all = all_factories ();
 
-    const char *name = gr::vmcircbuf_prefs::get(FACTORY_PREF_KEY);
+    //const char *name = gr::vmcircbuf_prefs::get(FACTORY_PREF_KEY);
+    const char *name = "gr::vmcircbuf_mmap_tmpfile_factory";
 
     if(name) {
       for(unsigned int i = 0; i < all.size (); i++) {
