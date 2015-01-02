@@ -40,8 +40,11 @@ if(HAVE_DLFCN_H)
     list(APPEND volk_libraries ${CMAKE_DL_LIBS})
 endif()
 
-# REQUIRED FOR ANDROID BUILDS
-list(APPEND volk_libraries m)
+
+if(ANDROID)
+  list(APPEND volk_libraries m log)
+endif(ANDROID)
+
 
 ########################################################################
 # Setup the compiler name
@@ -102,7 +105,7 @@ macro(check_arch arch_name)
     set(flags ${ARGN})
     set(have_${arch_name} TRUE)
     foreach(flag ${flags})
-        include(CheckCXXCompilerFlag)
+        include(CheckCCompilerFlag)
         set(have_flag have${flag})
         execute_process( #make the have_flag have nice alphanum chars (just for looks/not necessary)
             COMMAND ${PYTHON_EXECUTABLE} -c "import re; print(re.sub('\\W', '_', '${have_flag}'))"
@@ -111,7 +114,7 @@ macro(check_arch arch_name)
         if(VOLK_FLAG_CHECK_FLAGS)
             set(CMAKE_REQUIRED_FLAGS ${VOLK_FLAG_CHECK_FLAGS})
         endif()
-        CHECK_CXX_COMPILER_FLAG(${flag} ${have_flag})
+        CHECK_C_COMPILER_FLAG(${flag} ${have_flag})
         unset(CMAKE_REQUIRED_FLAGS)
         if (NOT ${have_flag})
             set(have_${arch_name} FALSE)
